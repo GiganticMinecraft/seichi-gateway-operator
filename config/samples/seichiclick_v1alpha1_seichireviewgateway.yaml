@@ -10,3 +10,4 @@ metadata:
   name: seichireviewgateway-sample
 spec:
   # TODO(user): Add fields here
+  pull-request-no: 1000

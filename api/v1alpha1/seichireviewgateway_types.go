@@ -28,14 +28,15 @@ type SeichiReviewGatewaySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of SeichiReviewGateway. Edit seichireviewgateway_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// 稼働環境を生成する時にどのプルリクエスト番号時点のリポジトリデータを参照するかの設定
+	PullRequestNo int `json:"pull-request-no"`
 }
 
 // SeichiReviewGatewayStatus defines the observed state of SeichiReviewGateway
 type SeichiReviewGatewayStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
 }
 
 //+kubebuilder:object:root=true
