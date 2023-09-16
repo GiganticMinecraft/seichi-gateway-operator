@@ -17,4 +17,13 @@ resources:
   kind: SeichiReviewGateway
   path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: seichi.click
+  group: seichiclick
+  kind: DynamicBungeeCordConfigration
+  path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

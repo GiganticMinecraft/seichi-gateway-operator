@@ -1,4 +1,6 @@
 ## Append samples of your project ##
 resources:
+- test-gateway.yaml
 - seichiclick_v1alpha1_seichireviewgateway.yaml
+- seichiclick_v1alpha1_dynamicbungeecordconfigration.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

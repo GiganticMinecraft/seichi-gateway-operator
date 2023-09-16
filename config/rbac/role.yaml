@@ -7,6 +7,32 @@ rules:
 - apiGroups:
   - seichiclick.seichi.click
   resources:
+  - dynamicbungeecordconfigrations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - seichiclick.seichi.click
+  resources:
+  - dynamicbungeecordconfigrations/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - seichiclick.seichi.click
+  resources:
+  - dynamicbungeecordconfigrations/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - seichiclick.seichi.click
+  resources:
   - seichireviewgateways
   verbs:
   - create

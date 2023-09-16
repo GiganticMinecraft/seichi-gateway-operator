@@ -35,10 +35,11 @@ spec:
           spec:
             description: SeichiReviewGatewaySpec defines the desired state of SeichiReviewGateway
             properties:
-              foo:
-                description: Foo is an example field of SeichiReviewGateway. Edit
-                  seichireviewgateway_types.go to remove/update
-                type: string
+              pull-request-no:
+                description: 稼働環境を生成する時にどのプルリクエスト番号時点のリポジトリデータを参照するかの設定
+                type: integer
+            required:
+            - pull-request-no
             type: object
           status:
             description: SeichiReviewGatewayStatus defines the observed state of SeichiReviewGateway
