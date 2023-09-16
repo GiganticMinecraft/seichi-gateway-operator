@@ -6,3 +6,7 @@
 ```sh
 kubebuilder init --domain seichi.click --repo github.com/GiganticMinecraft/seichi-gateway-operator
 ```
+
+```sh
+kubebuilder create api --group view --version v1alpha1 --kind SeichiReviewGateway
+```
