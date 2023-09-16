@@ -8,5 +8,5 @@ kubebuilder init --domain seichi.click --repo github.com/GiganticMinecraft/seich
 ```
 
 ```sh
-kubebuilder create api --group view --version v1alpha1 --kind SeichiReviewGateway
+kubebuilder create api --group view --version v1alpha1 --kind SeichiReviewGateway --controller --resource
 ```

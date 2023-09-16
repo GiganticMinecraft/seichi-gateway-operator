@@ -1,0 +1,12 @@
+apiVersion: view.seichi.click/v1alpha1
+kind: SeichiReviewGateway
+metadata:
+  labels:
+    app.kubernetes.io/name: seichireviewgateway
+    app.kubernetes.io/instance: seichireviewgateway-sample
+    app.kubernetes.io/part-of: seichi-gateway-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: seichi-gateway-operator
+  name: seichireviewgateway-sample
+spec:
+  # TODO(user): Add fields here
