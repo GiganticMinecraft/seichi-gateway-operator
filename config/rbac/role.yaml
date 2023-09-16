@@ -5,9 +5,19 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - seichiclick.seichi.click
   resources:
-  - dynamicbungeecordconfigrations
+  - bungeeconfigtemplates
   verbs:
   - create
   - delete
@@ -19,13 +29,13 @@ rules:
 - apiGroups:
   - seichiclick.seichi.click
   resources:
-  - dynamicbungeecordconfigrations/finalizers
+  - bungeeconfigtemplates/finalizers
   verbs:
   - update
 - apiGroups:
   - seichiclick.seichi.click
   resources:
-  - dynamicbungeecordconfigrations/status
+  - bungeeconfigtemplates/status
   verbs:
   - get
   - patch

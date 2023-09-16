@@ -35,11 +35,11 @@ spec:
           spec:
             description: SeichiReviewGatewaySpec defines the desired state of SeichiReviewGateway
             properties:
-              pull-request-no:
+              pullRequestNo:
                 description: 稼働環境を生成する時にどのプルリクエスト番号時点のリポジトリデータを参照するかの設定
                 type: integer
             required:
-            - pull-request-no
+            - pullRequestNo
             type: object
           status:
             description: SeichiReviewGatewayStatus defines the observed state of SeichiReviewGateway

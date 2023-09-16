@@ -96,11 +96,11 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SeichiReviewGateway")
 		os.Exit(1)
 	}
-	if err = (&controller.DynamicBungeeCordConfigrationReconciler{
+	if err = (&controller.BungeeConfigTemplateReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "DynamicBungeeCordConfigration")
+		setupLog.Error(err, "unable to create controller", "controller", "BungeeConfigTemplate")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

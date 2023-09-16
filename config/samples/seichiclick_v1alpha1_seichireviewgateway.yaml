@@ -9,5 +9,4 @@ metadata:
     app.kubernetes.io/created-by: seichi-gateway-operator
   name: seichireviewgateway-sample
 spec:
-  # TODO(user): Add fields here
-  pull-request-no: 1000
+  pullRequestNo: 1000

@@ -23,43 +23,46 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// SeichiReviewGatewaySpec defines the desired state of SeichiReviewGateway
-type SeichiReviewGatewaySpec struct {
+// BungeeConfigTemplateSpec defines the desired state of BungeeConfigTemplate
+type BungeeConfigTemplateSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// 稼働環境を生成する時にどのプルリクエスト番号時点のリポジトリデータを参照するかの設定
-	PullRequestNo int `json:"pullRequestNo"`
+	// BungeeCordのconfig.yamlを含むConfigMapマニフェスト。go-templateで記載されている
+	BungeeConfigTemplate string `json:"goTemplate"`
 }
 
-// SeichiReviewGatewayStatus defines the observed state of SeichiReviewGateway
-type SeichiReviewGatewayStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+// BungeeConfigTemplateStatus defines the observed state of BungeeConfigTemplate
+// +kubebuilder:validation:Enum=NotReady;Available;Healthy
+type BungeeConfigTemplateStatus string
 
-}
+const (
+	MarkdownViewApplying = BungeeConfigTemplateStatus("Applying")
+	MarkdownViewApplied  = BungeeConfigTemplateStatus("Applied")
+	MarkdownViewError    = BungeeConfigTemplateStatus("Error")
+)
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// SeichiReviewGateway is the Schema for the seichireviewgateways API
-type SeichiReviewGateway struct {
+// BungeeConfigTemplate is the Schema for the BungeeConfigTemplates API
+type BungeeConfigTemplate struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SeichiReviewGatewaySpec   `json:"spec,omitempty"`
-	Status SeichiReviewGatewayStatus `json:"status,omitempty"`
+	Spec   BungeeConfigTemplateSpec   `json:"spec,omitempty"`
+	Status BungeeConfigTemplateStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// SeichiReviewGatewayList contains a list of SeichiReviewGateway
-type SeichiReviewGatewayList struct {
+// BungeeConfigTemplateList contains a list of BungeeConfigTemplate
+type BungeeConfigTemplateList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []SeichiReviewGateway `json:"items"`
+	Items           []BungeeConfigTemplate `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&SeichiReviewGateway{}, &SeichiReviewGatewayList{})
+	SchemeBuilder.Register(&BungeeConfigTemplate{}, &BungeeConfigTemplateList{})
 }

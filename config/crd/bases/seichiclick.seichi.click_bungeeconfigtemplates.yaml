@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: dynamicbungeecordconfigrations.seichiclick.seichi.click
+  name: bungeeconfigtemplates.seichiclick.seichi.click
 spec:
   group: seichiclick.seichi.click
   names:
-    kind: DynamicBungeeCordConfigration
-    listKind: DynamicBungeeCordConfigrationList
-    plural: dynamicbungeecordconfigrations
-    singular: dynamicbungeecordconfigration
+    kind: BungeeConfigTemplate
+    listKind: BungeeConfigTemplateList
+    plural: bungeeconfigtemplates
+    singular: bungeeconfigtemplate
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: DynamicBungeeCordConfigration is the Schema for the dynamicbungeecordconfigrations
+        description: BungeeConfigTemplate is the Schema for the BungeeConfigTemplates
           API
         properties:
           apiVersion:
@@ -33,30 +33,17 @@ spec:
           metadata:
             type: object
           spec:
-            description: DynamicBungeeCordConfigrationSpec defines the desired state
-              of DynamicBungeeCordConfigration
+            description: BungeeConfigTemplateSpec defines the desired state of BungeeConfigTemplate
             properties:
-              bungeeConfigTemplate:
-                description: Foo is an example field of DynamicBungeeCordConfigration.
-                  Edit dynamicbungeecordconfigration_types.go to remove/update BungeeCordの設定のテンプレート
-                type: string
-              targetToApplyConfigmapKey:
-                type: string
-              targetToApplyConfigmapName:
-                type: string
-              targetToApplyNamespace:
-                description: 'apply先のconfigmapの情報 具体的には: - namespace.metadata.name
-                  - configmap.metadata.name - configmap.data.??? <-どこか'
+              goTemplate:
+                description: BungeeCordのconfig.yamlを含むConfigMapマニフェスト。go-templateで記載されている
                 type: string
             required:
-            - bungeeConfigTemplate
-            - targetToApplyConfigmapKey
-            - targetToApplyConfigmapName
-            - targetToApplyNamespace
+            - goTemplate
             type: object
           status:
-            description: DynamicBungeeCordConfigrationStatus defines the observed
-              state of DynamicBungeeCordConfigration
+            description: BungeeConfigTemplateStatus defines the observed state of
+              BungeeConfigTemplate
             enum:
             - NotReady
             - Available

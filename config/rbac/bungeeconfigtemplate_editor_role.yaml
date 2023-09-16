@@ -1,20 +1,20 @@
-# permissions for end users to edit dynamicbungeecordconfigrations.
+# permissions for end users to edit BungeeConfigTemplates.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: dynamicbungeecordconfigration-editor-role
+    app.kubernetes.io/instance: BungeeConfigTemplate-editor-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: seichi-gateway-operator
     app.kubernetes.io/part-of: seichi-gateway-operator
     app.kubernetes.io/managed-by: kustomize
-  name: dynamicbungeecordconfigration-editor-role
+  name: BungeeConfigTemplate-editor-role
 rules:
 - apiGroups:
   - seichiclick.seichi.click
   resources:
-  - dynamicbungeecordconfigrations
+  - BungeeConfigTemplates
   verbs:
   - create
   - delete
@@ -26,6 +26,6 @@ rules:
 - apiGroups:
   - seichiclick.seichi.click
   resources:
-  - dynamicbungeecordconfigrations/status
+  - BungeeConfigTemplates/status
   verbs:
   - get

@@ -14,5 +14,5 @@ kubebuilder create api --group seichiclick --version v1alpha1 --kind SeichiRevie
 imagePullPolicy: IfNotPresent -> config/crd/manager/manager.yml
 
 ```sh
-kubebuilder create api --group seichiclick --version v1alpha1 --kind DynamicBungeeCordConfigration --controller --resource
+kubebuilder create api --group seichiclick --version v1alpha1 --kind BungeeConfigTemplate --controller --resource
 ```
