@@ -13,7 +13,7 @@ resources:
     namespaced: true
   controller: true
   domain: seichi.click
-  group: view
+  group: seichiclick
   kind: SeichiReviewGateway
   path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
   version: v1alpha1

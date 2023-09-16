@@ -1,4 +1,4 @@
-apiVersion: view.seichi.click/v1alpha1
+apiVersion: seichiclick.seichi.click/v1alpha1
 kind: SeichiReviewGateway
 metadata:
   labels:

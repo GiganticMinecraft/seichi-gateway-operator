@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: seichireviewgateways.view.seichi.click
+  name: seichireviewgateways.seichiclick.seichi.click
 spec:
-  group: view.seichi.click
+  group: seichiclick.seichi.click
   names:
     kind: SeichiReviewGateway
     listKind: SeichiReviewGatewayList

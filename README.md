@@ -8,5 +8,7 @@ kubebuilder init --domain seichi.click --repo github.com/GiganticMinecraft/seich
 ```
 
 ```sh
-kubebuilder create api --group view --version v1alpha1 --kind SeichiReviewGateway --controller --resource
+kubebuilder create api --group seichiclick --version v1alpha1 --kind SeichiReviewGateway --controller --resource
 ```
+
+imagePullPolicy: IfNotPresent -> config/crd/manager/manager.yml

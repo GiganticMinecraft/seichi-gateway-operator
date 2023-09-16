@@ -1,27 +1,24 @@
-# permissions for end users to view seichireviewgateways.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: seichireviewgateway-viewer-role
-    app.kubernetes.io/component: rbac
+    app.kubernetes.io/instance: proxy-role
+    app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: seichi-gateway-operator
     app.kubernetes.io/part-of: seichi-gateway-operator
     app.kubernetes.io/managed-by: kustomize
-  name: seichireviewgateway-viewer-role
+  name: proxy-role
 rules:
 - apiGroups:
-  - seichiclick.seichi.click
+  - authentication.k8s.io
   resources:
-  - seichireviewgateways
+  - tokenreviews
   verbs:
-  - get
-  - list
-  - watch
+  - create
 - apiGroups:
-  - seichiclick.seichi.click
+  - authorization.k8s.io
   resources:
-  - seichireviewgateways/status
+  - subjectaccessreviews
   verbs:
-  - get
+  - create
