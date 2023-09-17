@@ -12,6 +12,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	seichiclickv1alpha1 "github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1"
+	"github.com/samber/lo"
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -29,37 +30,23 @@ type BungeeConfigTemplateReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the BungeeConfigTemplate object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.0/pkg/reconcile
 func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	// seichiReviewGatewayList に seichireviewgateways のリストを格納する
 	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiReviewGatewayList{}
 	if err := r.Client.List(ctx, seichiReviewGatewayList); err != nil {
-		// Handle error
 		return ctrl.Result{}, err
 	}
 
-	//  seichiReviewGatewayList と同じ長さの配列 reviewPullRequestNumberList を作る
-	reviewPullRequestNumberList := make([]int, len(seichiReviewGatewayList.Items))
+	pullRequestNumbers := lo.Map(seichiReviewGatewayList.Items, func(item seichiclickv1alpha1.SeichiReviewGateway, index int) int {
+		return item.Spec.PullRequestNo
+	})
 
-	// seichiReviewGatewayList.Items の要素1つ1つから、
-	// seichiReviewGatewayList.Items[i].Spec.PullRequestNo の値を取り出して、
-	// reviewPullRequestNumberList[i] に格納する
-	for i, seichiReviewGateway := range seichiReviewGatewayList.Items {
-		reviewPullRequestNumberList[i] = seichiReviewGateway.Spec.PullRequestNo
-	}
-
-	// BungeeConfigTemplateList に BungeeConfigTemplates のリストを格納する
 	BungeeConfigTemplateList := &seichiclickv1alpha1.BungeeConfigTemplateList{}
 	if err := r.Client.List(ctx, BungeeConfigTemplateList); err != nil {
-		// Handle error
 		return ctrl.Result{}, err
 	}
 
@@ -83,7 +70,7 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		// go template に reviewPullRequestNumberList を適用して、
 		// bungeeConfig に格納する
 		var bungeeConfig bytes.Buffer
-		if err := tmp.Execute(&bungeeConfig, reviewPullRequestNumberList); err != nil {
+		if err := tmp.Execute(&bungeeConfig, pullRequestNumbers); err != nil {
 			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
 			panic(err)
 		}
