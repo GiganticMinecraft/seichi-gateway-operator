@@ -15,13 +15,13 @@ import (
 	"text/template"
 )
 
-//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequest,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequest/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequest/finalizers,verbs=update
-//+kubebuilder:rbac:groups=seichi.click,resources=bungeeconfigmaptemplates,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequests,verbs=get;list;watch
+//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequests/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=seichi.click,resources=seichiassistdebugenvrequests/finalizers,verbs=update
+//+kubebuilder:rbac:groups=seichi.click,resources=bungeeconfigmaptemplates,verbs=get;list;watch;update;patch
 //+kubebuilder:rbac:groups=seichi.click,resources=bungeeconfigmaptemplates/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=seichi.click,resources=bungeeconfigmaptemplates/finalizers,verbs=update
-//+kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;list;watch;update;patch
+//+kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;create;update;patch
 
 func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)

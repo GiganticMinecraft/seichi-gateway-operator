@@ -9,18 +9,15 @@ rules:
   resources:
   - configmaps
   verbs:
+  - create
   - get
-  - list
   - patch
   - update
-  - watch
 - apiGroups:
   - seichi.click
   resources:
   - bungeeconfigmaptemplates
   verbs:
-  - create
-  - delete
   - get
   - list
   - patch
@@ -45,12 +42,8 @@ rules:
   resources:
   - seichiassistdebugenvrequests
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - seichi.click
