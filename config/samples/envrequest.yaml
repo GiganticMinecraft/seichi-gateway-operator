@@ -1,5 +1,5 @@
 apiVersion: seichi.click/v1alpha1
-kind: SeichiAssistDebugEnvironmentRequest
+kind: SeichiAssistDebugEnvRequest
 metadata:
   labels:
     app.kubernetes.io/part-of: seichi-gateway-operator

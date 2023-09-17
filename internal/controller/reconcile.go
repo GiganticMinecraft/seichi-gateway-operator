@@ -26,12 +26,12 @@ import (
 func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiAssistDebugEnvironmentRequestList{}
+	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiAssistDebugEnvRequestList{}
 	if err := k8sClient.List(ctx, seichiReviewGatewayList); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	pullRequestNumbers := lo.Map(seichiReviewGatewayList.Items, func(item seichiclickv1alpha1.SeichiAssistDebugEnvironmentRequest, index int) int {
+	pullRequestNumbers := lo.Map(seichiReviewGatewayList.Items, func(item seichiclickv1alpha1.SeichiAssistDebugEnvRequest, index int) int {
 		return item.Spec.PullRequestNo
 	})
 
