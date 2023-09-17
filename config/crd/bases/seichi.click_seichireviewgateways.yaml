@@ -17,8 +17,6 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: SeichiReviewGateway is the Schema for the seichireviewgateways
-          API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,7 +31,6 @@ spec:
           metadata:
             type: object
           spec:
-            description: SeichiReviewGatewaySpec defines the desired state of SeichiReviewGateway
             properties:
               pullRequestNo:
                 description: SeichiAssist リポジトリの Pull Request で Ready for review になっていて

@@ -33,7 +33,6 @@ spec:
           metadata:
             type: object
           spec:
-            description: BungeeConfigTemplateSpec defines the desired state of BungeeConfigTemplate
             properties:
               goTemplate:
                 description: BungeeCordのconfig.yamlを含むConfigMapマニフェスト。go-templateで記載されている
@@ -42,10 +41,7 @@ spec:
             - goTemplate
             type: object
           status:
-            description: BungeeConfigTemplateStatus defines the observed state of
-              BungeeConfigTemplate
             enum:
-            - Applying
             - Applied
             - Error
             type: string

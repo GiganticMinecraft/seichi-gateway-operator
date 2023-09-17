@@ -50,14 +50,8 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		return ctrl.Result{}, err
 	}
 
-	// BungeeConfigTemplateList.Items の要素1つ1つから、
-	// BungeeConfigTemplateList.Items[i].Spec.BungeeConfigTemplate
-	// の値を取り出す
 	for _, BungeeConfigTemplate := range BungeeConfigTemplateList.Items {
 		bungeeConfigTemplate := BungeeConfigTemplate.Spec.BungeeConfigTemplate
-
-		// BungeeConfigTemplate.Status を更新する
-		BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplying
 
 		// bungeeConfigTemplate に格納されているテンプレートをもとに、
 		// go template を作成する
