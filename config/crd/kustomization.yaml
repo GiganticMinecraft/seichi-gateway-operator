@@ -2,8 +2,8 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
+- bases/seichi.click_bungeeconfigmaptemplates.yaml
 - bases/seichi.click_seichiassistdebugenvrequests.yaml
-- bases/seichi.click_bungeeconfigtemplates.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patches:
