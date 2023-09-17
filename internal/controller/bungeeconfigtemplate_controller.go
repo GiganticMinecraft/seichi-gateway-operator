@@ -53,7 +53,7 @@ type BungeeConfigTemplateReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.0/pkg/reconcile
 func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
 	// seichiReviewGatewayList に seichireviewgateways のリストを格納する
 	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiReviewGatewayList{}
@@ -107,17 +107,8 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		// Convert YAML to Kubernetes object
 		var configMap corev1.ConfigMap
 		yamlManifest := bungeeConfig.String()
+
 		// YAML manifest as a string
-		yamlManifest = `
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: your-configmap-name
-  namespace: your-namespace
-data:
-  key1: value1
-  key2: value2
-`
 		decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewReader([]byte(yamlManifest)), len(yamlManifest))
 		if err := decoder.Decode(&configMap); err != nil {
 			panic(err.Error())
@@ -126,6 +117,7 @@ data:
 		// Apply the ConfigMap to the cluster
 		if err := r.Client.Update(ctx, &configMap); err != nil {
 			// Handle error
+			logger.Error(err, "unable to apply the ConfigMap to the cluster", "name", req.NamespacedName)
 			BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewError
 			return ctrl.Result{}, err
 		}
