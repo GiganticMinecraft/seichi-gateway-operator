@@ -37,9 +37,9 @@ type BungeeConfigTemplateSpec struct {
 type BungeeConfigTemplateStatus string
 
 const (
-	MarkdownViewApplying = BungeeConfigTemplateStatus("Applying")
-	MarkdownViewApplied  = BungeeConfigTemplateStatus("Applied")
-	MarkdownViewError    = BungeeConfigTemplateStatus("Error")
+	BungeeConfigApplying = BungeeConfigTemplateStatus("Applying")
+	BungeeConfigApplied  = BungeeConfigTemplateStatus("Applied")
+	BungeeConfigError    = BungeeConfigTemplateStatus("Error")
 )
 
 //+kubebuilder:object:root=true

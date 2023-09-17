@@ -86,13 +86,13 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		bungeeConfigTemplate := BungeeConfigTemplate.Spec.BungeeConfigTemplate
 
 		// BungeeConfigTemplate.Status を更新する
-		BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewApplying
+		BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplying
 
 		// bungeeConfigTemplate に格納されているテンプレートをもとに、
 		// go template を作成する
 		tmp, err := template.New("template").Parse(bungeeConfigTemplate)
 		if err != nil {
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewError
+			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
 			panic(err)
 		}
 
@@ -100,7 +100,7 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		// bungeeConfig に格納する
 		var bungeeConfig bytes.Buffer
 		if err := tmp.Execute(&bungeeConfig, reviewPullRequestNumberList); err != nil {
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewError
+			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
 			panic(err)
 		}
 
@@ -118,15 +118,15 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		if err := r.Client.Update(ctx, &configMap); err != nil {
 			// Handle error
 			logger.Error(err, "unable to apply the ConfigMap to the cluster", "name", req.NamespacedName)
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewError
+			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
 			return ctrl.Result{}, err
 		}
 
 		// BungeeConfigTemplate.Status を更新する
-		BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewApplied
+		BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplied
 		if err := r.Client.Status().Update(ctx, &BungeeConfigTemplate); err != nil {
 			// Handle error
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.MarkdownViewError
+			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
 			return ctrl.Result{}, err
 		}
 
