@@ -4,12 +4,3 @@ metadata:
   name: test-gateway
   labels:
     name: test-gateway
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: bungeecord-config
-  namespace: test-gateway
-data:
-  config.yaml: |
-    hogehoge

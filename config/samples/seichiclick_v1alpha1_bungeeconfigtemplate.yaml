@@ -1,4 +1,4 @@
-apiVersion: seichiclick.seichi.click/v1alpha1
+apiVersion: seichi.click/v1alpha1
 kind: BungeeConfigTemplate
 metadata:
   labels:

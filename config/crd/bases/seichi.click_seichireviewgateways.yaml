@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: bungeeconfigtemplates.seichiclick.seichi.click
+  name: seichireviewgateways.seichi.click
 spec:
-  group: seichiclick.seichi.click
+  group: seichi.click
   names:
-    kind: BungeeConfigTemplate
-    listKind: BungeeConfigTemplateList
-    plural: bungeeconfigtemplates
-    singular: bungeeconfigtemplate
+    kind: SeichiReviewGateway
+    listKind: SeichiReviewGatewayList
+    plural: seichireviewgateways
+    singular: seichireviewgateway
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: BungeeConfigTemplate is the Schema for the BungeeConfigTemplates
+        description: SeichiReviewGateway is the Schema for the seichireviewgateways
           API
         properties:
           apiVersion:
@@ -33,22 +33,15 @@ spec:
           metadata:
             type: object
           spec:
-            description: BungeeConfigTemplateSpec defines the desired state of BungeeConfigTemplate
+            description: SeichiReviewGatewaySpec defines the desired state of SeichiReviewGateway
             properties:
-              goTemplate:
-                description: BungeeCordのconfig.yamlを含むConfigMapマニフェスト。go-templateで記載されている
-                type: string
+              pullRequestNo:
+                description: SeichiAssist リポジトリの Pull Request で Ready for review になっていて
+                  デバッグ環境を必要としているものの番号
+                type: integer
             required:
-            - goTemplate
+            - pullRequestNo
             type: object
-          status:
-            description: BungeeConfigTemplateStatus defines the observed state of
-              BungeeConfigTemplate
-            enum:
-            - Applying
-            - Applied
-            - Error
-            type: string
         type: object
     served: true
     storage: true
