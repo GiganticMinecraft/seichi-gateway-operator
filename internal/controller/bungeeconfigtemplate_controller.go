@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"context"
+	"errors"
 	"text/template"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -33,7 +34,7 @@ type BungeeConfigTemplateReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.0/pkg/reconcile
-func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, _ ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
 	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiReviewGatewayList{}
@@ -45,56 +46,65 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		return item.Spec.PullRequestNo
 	})
 
-	BungeeConfigTemplateList := &seichiclickv1alpha1.BungeeConfigTemplateList{}
-	if err := r.Client.List(ctx, BungeeConfigTemplateList); err != nil {
+	bungeeConfigTemplates := &seichiclickv1alpha1.BungeeConfigTemplateList{}
+	if err := r.Client.List(ctx, bungeeConfigTemplates); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	for _, BungeeConfigTemplate := range BungeeConfigTemplateList.Items {
-		bungeeConfigTemplate := BungeeConfigTemplate.Spec.BungeeConfigTemplate
+	for _, bungeeConfigTemplate := range bungeeConfigTemplates.Items {
+		setErrorStatusToTemplateResourceAndReturnBecauseOf := func(err error) (ctrl.Result, error) {
+			logger.Error(
+				err, "unable to reconcile the config template",
+				"template", bungeeConfigTemplate,
+			)
 
-		// bungeeConfigTemplate に格納されているテンプレートをもとに、
-		// go template を作成する
-		tmp, err := template.New("template").Parse(bungeeConfigTemplate)
+			bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
+			if updateErr := r.Client.Status().Update(ctx, &bungeeConfigTemplate); err != nil {
+				return ctrl.Result{}, errors.Join(err, updateErr)
+			} else {
+				return ctrl.Result{}, err
+			}
+		}
+
+		templateObject, err := template.New("template").Parse(bungeeConfigTemplate.Spec.BungeeConfigTemplate)
 		if err != nil {
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
-			panic(err)
+			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
 
-		// go template に reviewPullRequestNumberList を適用して、
-		// bungeeConfig に格納する
-		var bungeeConfig bytes.Buffer
-		if err := tmp.Execute(&bungeeConfig, pullRequestNumbers); err != nil {
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
-			panic(err)
+		// templateObject を pullRequestNumbers を渡して展開したものを BungeeCord の ConfigMap を定義するマニフェストとして扱う
+		var bungeeConfigMapManifest bytes.Buffer
+		if err := templateObject.Execute(&bungeeConfigMapManifest, pullRequestNumbers); err != nil {
+			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
 
-		// Convert YAML to Kubernetes object
+		logger.Info(
+			"Trying to apply the ConfigMap to the cluster",
+			"manifest string", bungeeConfigMapManifest.String(),
+		)
+
+		// Manifest 文字列を Kubernetes object へと変換する
 		var configMap corev1.ConfigMap
-		yamlManifest := bungeeConfig.String()
-
-		// YAML manifest as a string
-		decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewReader([]byte(yamlManifest)), len(yamlManifest))
+		decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewReader(bungeeConfigMapManifest.Bytes()), bungeeConfigMapManifest.Len())
 		if err := decoder.Decode(&configMap); err != nil {
-			panic(err.Error())
+			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
 
-		// Apply the ConfigMap to the cluster
+		// クラスタに ConfigMap を適用する
 		if err := r.Client.Update(ctx, &configMap); err != nil {
-			// Handle error
-			logger.Error(err, "unable to apply the ConfigMap to the cluster", "name", req.NamespacedName)
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
+			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
+		}
+
+		// 適用が完了したらステータスを更新する
+		bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplied
+		if err := r.Client.Status().Update(ctx, &bungeeConfigTemplate); err != nil {
+			// 適用には成功しているので Status は Applied のままにしておく
 			return ctrl.Result{}, err
 		}
 
-		// BungeeConfigTemplate.Status を更新する
-		BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplied
-		if err := r.Client.Status().Update(ctx, &BungeeConfigTemplate); err != nil {
-			// Handle error
-			BungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
-			return ctrl.Result{}, err
-		}
-
+		logger.Info(
+			"Applied the ConfigMap to the cluster",
+			"template", bungeeConfigTemplate,
+		)
 	}
 
 	return ctrl.Result{}, nil
