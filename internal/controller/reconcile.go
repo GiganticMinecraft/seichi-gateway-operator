@@ -97,8 +97,11 @@ func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) 
 			Data: configMapData,
 		}
 
-		// クラスタに ConfigMap を適用する
-		if err := k8sClient.Update(ctx, configMap); err != nil {
+		// クラスタに ConfigMap を apply する
+		if err := k8sClient.Patch(
+			ctx, configMap, client.Apply,
+			client.ForceOwnership, client.FieldOwner("seichi-gateway-operator"),
+		); err != nil {
 			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
 
