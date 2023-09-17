@@ -43,7 +43,7 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - seichiassistdebugenvrequest
+  - seichiassistdebugenvrequests
   verbs:
   - create
   - delete
@@ -55,13 +55,13 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - seichiassistdebugenvrequest/finalizers
+  - seichiassistdebugenvrequests/finalizers
   verbs:
   - update
 - apiGroups:
   - seichi.click
   resources:
-  - seichiassistdebugenvrequest/status
+  - seichiassistdebugenvrequests/status
   verbs:
   - get
   - patch
