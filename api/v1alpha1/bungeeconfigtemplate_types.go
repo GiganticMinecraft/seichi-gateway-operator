@@ -33,7 +33,7 @@ type BungeeConfigTemplateSpec struct {
 }
 
 // BungeeConfigTemplateStatus defines the observed state of BungeeConfigTemplate
-// +kubebuilder:validation:Enum=NotReady;Available;Healthy
+// +kubebuilder:validation:Enum=Applying;Applied;Error
 type BungeeConfigTemplateStatus string
 
 const (

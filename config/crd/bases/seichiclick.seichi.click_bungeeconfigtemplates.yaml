@@ -45,9 +45,9 @@ spec:
             description: BungeeConfigTemplateStatus defines the observed state of
               BungeeConfigTemplate
             enum:
-            - NotReady
-            - Available
-            - Healthy
+            - Applying
+            - Applied
+            - Error
             type: string
         type: object
     served: true
