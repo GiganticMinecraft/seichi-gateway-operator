@@ -17,7 +17,7 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - bungeeconfigtemplates
+  - bungeeconfigmaptemplates
   verbs:
   - create
   - delete
@@ -29,13 +29,13 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - bungeeconfigtemplates/finalizers
+  - bungeeconfigmaptemplates/finalizers
   verbs:
   - update
 - apiGroups:
   - seichi.click
   resources:
-  - bungeeconfigtemplates/status
+  - bungeeconfigmaptemplates/status
   verbs:
   - get
   - patch
@@ -43,7 +43,7 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - seichireviewgateways
+  - seichiassistdebugenvrequest
   verbs:
   - create
   - delete
@@ -55,13 +55,13 @@ rules:
 - apiGroups:
   - seichi.click
   resources:
-  - seichireviewgateways/finalizers
+  - seichiassistdebugenvrequest/finalizers
   verbs:
   - update
 - apiGroups:
   - seichi.click
   resources:
-  - seichireviewgateways/status
+  - seichiassistdebugenvrequest/status
   verbs:
   - get
   - patch
