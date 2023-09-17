@@ -85,7 +85,14 @@ func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) 
 			ObjectMeta: metav1.ObjectMeta{
 				Namespace: bungeeConfigTemplate.Namespace,
 				Name:      bungeeConfigTemplate.Name,
-				// TODO: OwnerReferences を bungeeConfigTemplate に設定する
+				OwnerReferences: []metav1.OwnerReference{
+					{
+						APIVersion: bungeeConfigTemplate.APIVersion,
+						Kind:       bungeeConfigTemplate.Kind,
+						Name:       bungeeConfigTemplate.Name,
+						UID:        bungeeConfigTemplate.UID,
+					},
+				},
 			},
 			Data: configMapData,
 		}
