@@ -62,7 +62,7 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, req ctrl
 		return ctrl.Result{}, err
 	}
 
-	//  seichiReviewGatewayList と同じ長さの配列を作る
+	//  seichiReviewGatewayList と同じ長さの配列 reviewPullRequestNumberList を作る
 	reviewPullRequestNumberList := make([]int, len(seichiReviewGatewayList.Items))
 
 	// seichiReviewGatewayList.Items の要素1つ1つから、
