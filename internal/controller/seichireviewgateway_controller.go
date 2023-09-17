@@ -20,6 +20,6 @@ func (r *SeichiReviewGatewayReconciler) Reconcile(ctx context.Context, _ ctrl.Re
 
 func (r *SeichiReviewGatewayReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&seichiclickv1alpha1.SeichiReviewGateway{}).
+		For(&seichiclickv1alpha1.SeichiAssistDebugEnvironmentRequest{}).
 		Complete(r)
 }

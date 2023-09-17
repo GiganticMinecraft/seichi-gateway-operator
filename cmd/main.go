@@ -77,14 +77,14 @@ func main() {
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "SeichiReviewGateway")
+		setupLog.Error(err, "unable to create controller", "controller", "SeichiAssistDebugEnvironmentRequest")
 		os.Exit(1)
 	}
 	if err = (&controller.BungeeConfigTemplateReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "BungeeConfigTemplate")
+		setupLog.Error(err, "unable to create controller", "controller", "BungeeConfigMapTemplate")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

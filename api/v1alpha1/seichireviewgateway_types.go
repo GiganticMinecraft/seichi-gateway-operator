@@ -4,7 +4,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type SeichiReviewGatewaySpec struct {
+type SeichiAssistDebugEnvironmentRequestSpec struct {
 	// SeichiAssist リポジトリの Pull Request で Ready for review になっていて
 	// デバッグ環境を必要としているものの番号
 	PullRequestNo int `json:"pullRequestNo"`
@@ -13,21 +13,21 @@ type SeichiReviewGatewaySpec struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-type SeichiReviewGateway struct {
+type SeichiAssistDebugEnvironmentRequest struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec SeichiReviewGatewaySpec `json:"spec,omitempty"`
+	Spec SeichiAssistDebugEnvironmentRequestSpec `json:"spec,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-type SeichiReviewGatewayList struct {
+type SeichiAssistDebugEnvironmentRequestList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []SeichiReviewGateway `json:"items"`
+	Items           []SeichiAssistDebugEnvironmentRequest `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&SeichiReviewGateway{}, &SeichiReviewGatewayList{})
+	SchemeBuilder.Register(&SeichiAssistDebugEnvironmentRequest{}, &SeichiAssistDebugEnvironmentRequestList{})
 }

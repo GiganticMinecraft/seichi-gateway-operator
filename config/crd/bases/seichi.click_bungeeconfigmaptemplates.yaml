@@ -4,21 +4,19 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: bungeeconfigtemplates.seichi.click
+  name: bungeeconfigmaptemplates.seichi.click
 spec:
   group: seichi.click
   names:
-    kind: BungeeConfigTemplate
-    listKind: BungeeConfigTemplateList
-    plural: bungeeconfigtemplates
-    singular: bungeeconfigtemplate
+    kind: BungeeConfigMapTemplate
+    listKind: BungeeConfigMapTemplateList
+    plural: bungeeconfigmaptemplates
+    singular: bungeeconfigmaptemplate
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: BungeeConfigTemplate is the Schema for the BungeeConfigTemplates
-          API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,11 +32,12 @@ spec:
             type: object
           spec:
             properties:
-              goTemplate:
-                description: BungeeCordのconfig.yamlを含むConfigMapマニフェスト。go-templateで記載されている
+              dataGoTemplate:
+                description: BungeeCord の config.yaml を含む ConfigMap.spec.data を生成するための
+                  Go Template 文字列
                 type: string
             required:
-            - goTemplate
+            - dataGoTemplate
             type: object
           status:
             enum:

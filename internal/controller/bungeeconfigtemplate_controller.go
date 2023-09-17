@@ -19,6 +19,6 @@ func (r *BungeeConfigTemplateReconciler) Reconcile(ctx context.Context, _ ctrl.R
 
 func (r *BungeeConfigTemplateReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&seichiclickv1alpha1.BungeeConfigTemplate{}).
+		For(&seichiclickv1alpha1.BungeeConfigMapTemplate{}).
 		Complete(r)
 }

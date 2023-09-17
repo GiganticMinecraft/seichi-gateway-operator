@@ -1,6 +1,5 @@
 ## Append samples of your project ##
 resources:
-- test-gateway.yaml
-- seichiclick_v1alpha1_seichireviewgateway.yaml
-- seichiclick_v1alpha1_BungeeConfigTemplate.yaml
-#+kubebuilder:scaffold:manifestskustomizesamples
+- namespace.yaml
+- envrequest.yaml
+- configmaptemplate.yaml

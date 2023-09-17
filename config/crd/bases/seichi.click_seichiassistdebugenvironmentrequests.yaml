@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: seichireviewgateways.seichi.click
+  name: seichiassistdebugenvironmentrequests.seichi.click
 spec:
   group: seichi.click
   names:
-    kind: SeichiReviewGateway
-    listKind: SeichiReviewGatewayList
-    plural: seichireviewgateways
-    singular: seichireviewgateway
+    kind: SeichiAssistDebugEnvironmentRequest
+    listKind: SeichiAssistDebugEnvironmentRequestList
+    plural: seichiassistdebugenvironmentrequests
+    singular: seichiassistdebugenvironmentrequest
   scope: Namespaced
   versions:
   - name: v1alpha1

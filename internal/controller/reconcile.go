@@ -7,6 +7,7 @@ import (
 	seichiclickv1alpha1 "github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1"
 	"github.com/samber/lo"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -25,16 +26,16 @@ import (
 func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiReviewGatewayList{}
+	seichiReviewGatewayList := &seichiclickv1alpha1.SeichiAssistDebugEnvironmentRequestList{}
 	if err := k8sClient.List(ctx, seichiReviewGatewayList); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	pullRequestNumbers := lo.Map(seichiReviewGatewayList.Items, func(item seichiclickv1alpha1.SeichiReviewGateway, index int) int {
+	pullRequestNumbers := lo.Map(seichiReviewGatewayList.Items, func(item seichiclickv1alpha1.SeichiAssistDebugEnvironmentRequest, index int) int {
 		return item.Spec.PullRequestNo
 	})
 
-	bungeeConfigTemplates := &seichiclickv1alpha1.BungeeConfigTemplateList{}
+	bungeeConfigTemplates := &seichiclickv1alpha1.BungeeConfigMapTemplateList{}
 	if err := k8sClient.List(ctx, bungeeConfigTemplates); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -46,7 +47,7 @@ func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) 
 				"template", bungeeConfigTemplate,
 			)
 
-			bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigError
+			bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigMapTemplateError
 			if updateErr := k8sClient.Status().Update(ctx, &bungeeConfigTemplate); err != nil {
 				return ctrl.Result{}, errors.Join(err, updateErr)
 			} else {
@@ -54,7 +55,7 @@ func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) 
 			}
 		}
 
-		templateObject, err := template.New("template").Parse(bungeeConfigTemplate.Spec.BungeeConfigTemplate)
+		templateObject, err := template.New("template").Parse(bungeeConfigTemplate.Spec.ConfigMapDataTemplate)
 		if err != nil {
 			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
@@ -70,20 +71,32 @@ func ReconcileAllManagedResources(ctx context.Context, k8sClient client.Client) 
 			"manifest string", bungeeConfigMapManifest.String(),
 		)
 
-		// Manifest 文字列を Kubernetes object へと変換する
-		var configMap corev1.ConfigMap
+		// Manifest 文字列を ConfigMap の data として扱う
+		var configMapData map[string]string
 		decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewReader(bungeeConfigMapManifest.Bytes()), bungeeConfigMapManifest.Len())
-		if err := decoder.Decode(&configMap); err != nil {
+		if err := decoder.Decode(&configMapData); err != nil {
 			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
+		}
+		configMap := &corev1.ConfigMap{
+			TypeMeta: metav1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "ConfigMap",
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Namespace: bungeeConfigTemplate.Namespace,
+				Name:      bungeeConfigTemplate.Name,
+				// TODO: OwnerReferences を bungeeConfigTemplate に設定する
+			},
+			Data: configMapData,
 		}
 
 		// クラスタに ConfigMap を適用する
-		if err := k8sClient.Update(ctx, &configMap); err != nil {
+		if err := k8sClient.Update(ctx, configMap); err != nil {
 			return setErrorStatusToTemplateResourceAndReturnBecauseOf(err)
 		}
 
 		// 適用が完了したらステータスを更新する
-		bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigApplied
+		bungeeConfigTemplate.Status = seichiclickv1alpha1.BungeeConfigMapTemplateApplied
 		if err := k8sClient.Status().Update(ctx, &bungeeConfigTemplate); err != nil {
 			// 適用には成功しているので Status は Applied のままにしておく
 			return ctrl.Result{}, err
