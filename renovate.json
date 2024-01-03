@@ -2,5 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>GiganticMinecraft/renovate-config"
+  ],
+  "timezone": "Asia/Tokyo",
+  "reviewers": ["outductor"],
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodUpdateImportPaths"
   ]
 }
