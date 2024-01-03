@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/onsi/ginkgo/v2 v2.12.0
 	github.com/onsi/gomega v1.27.10
-	github.com/samber/lo v1.38.1
+	github.com/samber/lo v1.39.0
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
