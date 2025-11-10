@@ -2,7 +2,7 @@
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.28.0
+ENVTEST_K8S_VERSION = 1.34.1
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -26,6 +26,16 @@ SHELL = /usr/bin/env bash -o pipefail
 all: build
 
 ##@ General
+
+# Ensure that the required version of Go is being used.
+.PHONY: go-version
+go-version:
+	@GOVERSION=$$(go version | awk '{print $$3}' | sed 's/go//'); \
+	REQUIRED_VERSION="1.24"; \
+	if [ "$$(printf '%s\n' "$$REQUIRED_VERSION" "$$GOVERSION" | sort -V | head -n1)" != "$$REQUIRED_VERSION" ]; then \
+		echo "Go version $$GOVERSION is less than required version $$REQUIRED_VERSION"; \
+		exit 1; \
+	fi
 
 # The help target prints out all targets with their descriptions organized
 # beneath their categories. The categories are represented by '##@' and the
@@ -67,7 +77,7 @@ test: manifests generate fmt vet envtest ## Run tests.
 ##@ Build
 
 .PHONY: build
-build: manifests generate fmt vet ## Build manager binary.
+build: go-version manifests generate fmt vet ## Build manager binary.
 	go build -o bin/manager cmd/main.go
 
 .PHONY: run
@@ -139,8 +149,8 @@ CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 
 ## Tool Versions
-KUSTOMIZE_VERSION ?= v5.1.1
-CONTROLLER_TOOLS_VERSION ?= v0.13.0
+KUSTOMIZE_VERSION ?= v5.8.0
+CONTROLLER_TOOLS_VERSION ?= v0.19.0
 
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary. If wrong version is installed, it will be removed before downloading.
