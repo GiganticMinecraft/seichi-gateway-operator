@@ -26,4 +26,4 @@ resources:
   kind: BungeeConfigTemplate
   path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
   version: v1alpha1
-version: "3"
+version: "4"

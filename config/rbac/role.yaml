@@ -27,12 +27,14 @@ rules:
   - seichi.click
   resources:
   - bungeeconfigmaptemplates/finalizers
+  - seichiassistdebugenvrequests/finalizers
   verbs:
   - update
 - apiGroups:
   - seichi.click
   resources:
   - bungeeconfigmaptemplates/status
+  - seichiassistdebugenvrequests/status
   verbs:
   - get
   - patch
@@ -45,17 +47,3 @@ rules:
   - get
   - list
   - watch
-- apiGroups:
-  - seichi.click
-  resources:
-  - seichiassistdebugenvrequests/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - seichi.click
-  resources:
-  - seichiassistdebugenvrequests/status
-  verbs:
-  - get
-  - patch
-  - update
