@@ -46,7 +46,3 @@ type SeichiAssistDebugEnvRequestList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []SeichiAssistDebugEnvRequest `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&SeichiAssistDebugEnvRequest{}, &SeichiAssistDebugEnvRequestList{})
-}

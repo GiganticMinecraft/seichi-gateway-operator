@@ -56,7 +56,3 @@ type BungeeConfigMapTemplateList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []BungeeConfigMapTemplate `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&BungeeConfigMapTemplate{}, &BungeeConfigMapTemplateList{})
-}
