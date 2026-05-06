@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   pull_request:
@@ -7,27 +7,21 @@ on:
       - 'main'
 
 env:
-  cache-version: 1
   IMAGE: ghcr.io/giganticminecraft/seichi-gateway-operator
 
-jobs:
+permissions: {}
 
-  lint:
-    name: Small tests
+jobs:
+  build:
+    name: Build and push image
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
-          cache: true
-      # - name: golangci-lint
-      #   uses: golangci/golangci-lint-action@v3
-      #   with:
-      #       # Require: The version of golangci-lint to use.
-      #       # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
-      #       # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
-      #       version: v1.54
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         id: buildx
@@ -50,7 +44,6 @@ jobs:
             type=schedule,pattern={{date 'YYYYMMDD'}}
 
       - name: Build (and push if on main)
-        id: docker_build
         uses: docker/build-push-action@v7
         with:
           context: .

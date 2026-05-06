@@ -2,6 +2,7 @@
 # This file is used to track the info used to scaffold your project
 # and allow the plugins properly work.
 # More info: https://book.kubebuilder.io/reference/project-config.html
+cliVersion: 4.14.0
 domain: seichi.click
 layout:
 - go.kubebuilder.io/v4
@@ -14,7 +15,7 @@ resources:
   controller: true
   domain: seichi.click
   group: seichiclick
-  kind: SeichiReviewGateway
+  kind: BungeeConfigMapTemplate
   path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
   version: v1alpha1
 - api:
@@ -23,7 +24,7 @@ resources:
   controller: true
   domain: seichi.click
   group: seichiclick
-  kind: BungeeConfigTemplate
+  kind: SeichiAssistDebugEnvRequest
   path: github.com/GiganticMinecraft/seichi-gateway-operator/api/v1alpha1
   version: v1alpha1
-version: "4"
+version: "3"

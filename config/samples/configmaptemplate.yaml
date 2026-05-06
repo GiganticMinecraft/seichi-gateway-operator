@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: seichi-gateway-operator
     app.kubernetes.io/created-by: seichi-gateway-operator
-  name: bungeeconfigtemplate-sample
+  name: bungeeconfigmaptemplate-sample
 spec:
   dataGoTemplate: |
     config.yaml: |
