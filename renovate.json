@@ -8,5 +8,18 @@
   "postUpdateOptions": [
     "gomodTidy",
     "gomodUpdateImportPaths"
+  ],
+  "packageRules": [
+    {
+      "description": "Group Kubernetes-related dependencies together to ensure compatibility",
+      "groupName": "kubernetes monorepo",
+      "matchPackageNames": [
+        "k8s.io/api",
+        "k8s.io/apimachinery",
+        "k8s.io/client-go",
+        "k8s.io/apiextensions-apiserver",
+        "sigs.k8s.io/controller-runtime"
+      ]
+    }
   ]
 }
