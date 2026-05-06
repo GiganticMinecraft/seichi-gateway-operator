@@ -7,7 +7,7 @@ ARG TARGETARCH
 
 WORKDIR /workspace
 
-# Download dependencies with cache mount for better performance
+# Download dependencies with cache mount for better performance.
 # Cache location: /go/pkg/mod/
 RUN --mount=type=bind,source=go.sum,target=go.sum \
     --mount=type=bind,source=go.mod,target=go.mod \
