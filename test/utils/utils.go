@@ -34,8 +34,9 @@ const (
 	// prometheusOperatorVersion pins the ServiceMonitor CRD used by e2e tests.
 	// config/default includes a ServiceMonitor, so the CRD must exist before `make deploy`.
 	prometheusOperatorVersion = "v0.94.1"
-	serviceMonitorCRDURLTmpl  = "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/%s/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml"
-	serviceMonitorCRDName     = "servicemonitors.monitoring.coreos.com"
+	serviceMonitorCRDURLTmpl  = "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/" +
+		"%s/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml"
+	serviceMonitorCRDName = "servicemonitors.monitoring.coreos.com"
 
 	defaultKindBinary  = "kind"
 	defaultKindCluster = "kind"
@@ -165,10 +166,15 @@ func UninstallServiceMonitorCRD() {
 }
 
 // IsServiceMonitorCRDInstalled checks whether the ServiceMonitor CRD exists.
-func IsServiceMonitorCRDInstalled() bool {
-	cmd := exec.Command("kubectl", "get", "crd", serviceMonitorCRDName)
-	_, err := Run(cmd)
-	return err == nil
+// It returns an error unless the CRD is either found or reported as NotFound, so that a transient
+// API error is not mistaken for "not installed" (which would make the suite delete a pre-existing CRD).
+func IsServiceMonitorCRDInstalled() (bool, error) {
+	cmd := exec.Command("kubectl", "get", "crd", serviceMonitorCRDName, "--ignore-not-found", "-o", "name")
+	output, err := Run(cmd)
+	if err != nil {
+		return false, err
+	}
+	return strings.TrimSpace(output) != "", nil
 }
 
 // LoadImageToKindClusterWithName loads a local docker image to the kind cluster

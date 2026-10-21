@@ -25,6 +25,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -183,6 +184,18 @@ var _ = Describe("Manager", Ordered, func() {
 			output, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred(), "ServiceMonitor should exist")
 			Expect(output).To(Equal("https https /var/run/secrets/kubernetes.io/serviceaccount/token"))
+
+			By("validating that the ServiceMonitor selector matches the metrics service")
+			cmd = exec.Command("kubectl", "get", "servicemonitor", metricsServiceMonitorName, "-n", namespace,
+				"-o", `go-template={{range $k, $v := .spec.selector.matchLabels}}{{$k}}={{$v}},{{end}}`)
+			output, err = utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			selector := strings.TrimSuffix(output, ",")
+			Expect(selector).NotTo(BeEmpty())
+			cmd = exec.Command("kubectl", "get", "service", "-n", namespace, "-l", selector, "-o", "name")
+			output, err = utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(utils.GetNonEmptyLines(output)).To(ConsistOf("service/" + metricsServiceName))
 		})
 
 		It("should ensure the metrics endpoint is serving metrics", func() {

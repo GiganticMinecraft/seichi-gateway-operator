@@ -132,7 +132,9 @@ func setupServiceMonitorCRD() {
 		return
 	}
 	By("checking if the ServiceMonitor CRD is already installed")
-	if utils.IsServiceMonitorCRDInstalled() {
+	installed, err := utils.IsServiceMonitorCRDInstalled()
+	Expect(err).NotTo(HaveOccurred(), "Failed to check whether the ServiceMonitor CRD is installed")
+	if installed {
 		_, _ = fmt.Fprintf(GinkgoWriter, "ServiceMonitor CRD is already installed. Skipping installation.\n")
 		return
 	}
