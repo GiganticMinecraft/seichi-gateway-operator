@@ -31,6 +31,13 @@ const (
 	certmanagerVersion = "v1.20.2"
 	certmanagerURLTmpl = "https://github.com/cert-manager/cert-manager/releases/download/%s/cert-manager.yaml"
 
+	// prometheusOperatorVersion pins the ServiceMonitor CRD used by e2e tests.
+	// config/default includes a ServiceMonitor, so the CRD must exist before `make deploy`.
+	prometheusOperatorVersion = "v0.94.1"
+	serviceMonitorCRDURLTmpl  = "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/" +
+		"%s/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml"
+	serviceMonitorCRDName = "servicemonitors.monitoring.coreos.com"
+
 	defaultKindBinary  = "kind"
 	defaultKindCluster = "kind"
 )
@@ -131,6 +138,43 @@ func IsCertManagerCRDsInstalled() bool {
 	}
 
 	return false
+}
+
+// InstallServiceMonitorCRD installs only the ServiceMonitor CRD of the Prometheus Operator
+// (not the operator itself) so that config/default can be applied.
+func InstallServiceMonitorCRD() error {
+	url := fmt.Sprintf(serviceMonitorCRDURLTmpl, prometheusOperatorVersion)
+	// Server-side apply avoids the last-applied-configuration annotation size limit on large CRDs.
+	cmd := exec.Command("kubectl", "apply", "--server-side", "-f", url)
+	if _, err := Run(cmd); err != nil {
+		return err
+	}
+	cmd = exec.Command("kubectl", "wait", "crd/"+serviceMonitorCRDName,
+		"--for", "condition=Established",
+		"--timeout", "1m",
+	)
+	_, err := Run(cmd)
+	return err
+}
+
+// UninstallServiceMonitorCRD removes the ServiceMonitor CRD installed by InstallServiceMonitorCRD.
+func UninstallServiceMonitorCRD() {
+	cmd := exec.Command("kubectl", "delete", "crd", serviceMonitorCRDName, "--ignore-not-found")
+	if _, err := Run(cmd); err != nil {
+		warnError(err)
+	}
+}
+
+// IsServiceMonitorCRDInstalled checks whether the ServiceMonitor CRD exists.
+// It returns an error unless the CRD is either found or reported as NotFound, so that a transient
+// API error is not mistaken for "not installed" (which would make the suite delete a pre-existing CRD).
+func IsServiceMonitorCRDInstalled() (bool, error) {
+	cmd := exec.Command("kubectl", "get", "crd", serviceMonitorCRDName, "--ignore-not-found", "-o", "name")
+	output, err := Run(cmd)
+	if err != nil {
+		return false, err
+	}
+	return strings.TrimSpace(output) != "", nil
 }
 
 // LoadImageToKindClusterWithName loads a local docker image to the kind cluster

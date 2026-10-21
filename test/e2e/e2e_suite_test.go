@@ -36,6 +36,8 @@ var (
 	managerImage = "example.com/seichi-gateway-operator:v0.0.1"
 	// shouldCleanupCertManager tracks whether CertManager was installed by this suite.
 	shouldCleanupCertManager = false
+	// shouldCleanupServiceMonitorCRD tracks whether the ServiceMonitor CRD was installed by this suite.
+	shouldCleanupServiceMonitorCRD = false
 )
 
 // TestE2E runs the e2e test suite to validate the solution in an isolated environment.
@@ -44,6 +46,7 @@ var (
 // To enable kubectl kuberc (use custom kubectl configurations), set: KUBECTL_KUBERC=true
 // By default, kuberc is disabled to ensure consistent test behavior across different environments.
 // To skip CertManager installation, set: CERT_MANAGER_INSTALL_SKIP=true
+// To skip ServiceMonitor CRD installation, set: PROMETHEUS_CRD_INSTALL_SKIP=true
 func TestE2E(t *testing.T) {
 	RegisterFailHandler(Fail)
 	_, _ = fmt.Fprintf(GinkgoWriter, "Starting seichi-gateway-operator e2e test suite\n")
@@ -64,9 +67,11 @@ var _ = BeforeSuite(func() {
 
 	configureKubectlKubeRC()
 	setupCertManager()
+	setupServiceMonitorCRD()
 })
 
 var _ = AfterSuite(func() {
+	teardownServiceMonitorCRD()
 	teardownCertManager()
 })
 
@@ -116,4 +121,34 @@ func teardownCertManager() {
 
 	By("uninstalling CertManager")
 	utils.UninstallCertManager()
+}
+
+// setupServiceMonitorCRD installs the ServiceMonitor CRD, which config/default requires
+// because it ships a ServiceMonitor for the metrics endpoint.
+// Skips installation if PROMETHEUS_CRD_INSTALL_SKIP=true or if already present.
+func setupServiceMonitorCRD() {
+	if os.Getenv("PROMETHEUS_CRD_INSTALL_SKIP") == "true" {
+		_, _ = fmt.Fprintf(GinkgoWriter, "Skipping ServiceMonitor CRD installation (PROMETHEUS_CRD_INSTALL_SKIP=true)\n")
+		return
+	}
+	By("checking if the ServiceMonitor CRD is already installed")
+	installed, err := utils.IsServiceMonitorCRDInstalled()
+	Expect(err).NotTo(HaveOccurred(), "Failed to check whether the ServiceMonitor CRD is installed")
+	if installed {
+		_, _ = fmt.Fprintf(GinkgoWriter, "ServiceMonitor CRD is already installed. Skipping installation.\n")
+		return
+	}
+	shouldCleanupServiceMonitorCRD = true
+	By("installing the ServiceMonitor CRD")
+	Expect(utils.InstallServiceMonitorCRD()).To(Succeed(), "Failed to install the ServiceMonitor CRD")
+}
+
+// teardownServiceMonitorCRD uninstalls the ServiceMonitor CRD if it was installed by setupServiceMonitorCRD.
+func teardownServiceMonitorCRD() {
+	if !shouldCleanupServiceMonitorCRD {
+		_, _ = fmt.Fprintf(GinkgoWriter, "Skipping ServiceMonitor CRD cleanup (not installed by this suite)\n")
+		return
+	}
+	By("uninstalling the ServiceMonitor CRD")
+	utils.UninstallServiceMonitorCRD()
 }
