@@ -42,6 +42,9 @@ const serviceAccountName = "seichi-gateway-operator-controller-manager"
 // metricsServiceName is the name of the metrics service of the project
 const metricsServiceName = "seichi-gateway-operator-controller-manager-metrics-service"
 
+// metricsServiceMonitorName is the name of the ServiceMonitor that scrapes the metrics service
+const metricsServiceMonitorName = "seichi-gateway-operator-controller-manager-metrics-monitor"
+
 // metricsRoleBindingName is the name of the RBAC that will be created to allow get the metrics data
 const metricsRoleBindingName = "seichi-gateway-operator-metrics-binding"
 
@@ -171,6 +174,15 @@ var _ = Describe("Manager", Ordered, func() {
 				g.Expect(output).To(Equal("Running"), "Incorrect controller-manager pod status")
 			}
 			Eventually(verifyControllerUp).Should(Succeed())
+		})
+
+		It("should create the ServiceMonitor for the metrics endpoint", func() {
+			By("validating that the ServiceMonitor exists and targets the https port with a bearer token")
+			cmd := exec.Command("kubectl", "get", "servicemonitor", metricsServiceMonitorName, "-n", namespace,
+				"-o", "jsonpath={.spec.endpoints[0].port} {.spec.endpoints[0].scheme} {.spec.endpoints[0].bearerTokenFile}")
+			output, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred(), "ServiceMonitor should exist")
+			Expect(output).To(Equal("https https /var/run/secrets/kubernetes.io/serviceaccount/token"))
 		})
 
 		It("should ensure the metrics endpoint is serving metrics", func() {
