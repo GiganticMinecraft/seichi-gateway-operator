@@ -14,7 +14,7 @@ permissions: {}
 jobs:
   build:
     name: Build and push image
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     # 連続マージや古い run の再実行で run が並走し、古いコミットのビルドが後から完了しないよう
     # 直列化する。main では実行中の run はキャンセルしない (待機できる run はグループに 1 つだけで、
     # さらに新しい run が来ると待機中の方は cancel される)
